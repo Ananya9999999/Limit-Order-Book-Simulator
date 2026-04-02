@@ -26,5 +26,26 @@ class LimitOrderBook{
             else{
                 asks[price].emplace_back(order);
             }
+
+            matchOrder();
         }
-}
+
+        void matchOrder(){
+            while (!bids.empty() && !asks.empty() && bids.rbegin()-> first >= asks.begin()->first){
+                auto& bestBid= bids.rbegin()->second;
+                auto& bestAsk= asks.begin()->second;
+
+                double tradePrice= bestAsk.front().price;
+                uint64_t tradedVol= std::min(bestBid.front().volume, bestAsk.front().volume);
+
+                bestBid.front().volume-= tradedVol;
+                bestAsk.front().volume-= tradedVol;
+
+                if (bestBid.front().volume==0) bestBid.pop_front();
+                if (bestAsk.front().volume==0) bestAsk.pop_front();
+
+                if (bids.rbegin()->second.empty()) bids.erase(bids.rbegin()->first);
+                if (asks.begin()->second.empty()) asks.erase(asks.begin()->first);
+            }
+        }
+};
