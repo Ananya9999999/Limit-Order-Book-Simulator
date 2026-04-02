@@ -48,4 +48,14 @@ class LimitOrderBook{
                 if (asks.begin()->second.empty()) asks.erase(asks.begin()->first);
             }
         }
+
+        void printBook() {
+            std::cout << "\n=== LOB ===\n";
+            for (const auto& [price, orders] : bids) {
+                std::cout << "BID " << price << ": " << orders.front().volume << std::endl;
+            }
+            for (const auto& [price, orders] : asks) {
+                std::cout << "ASK " << price << ": " << orders.front().volume << std::endl;
+            }
+        }
 };
