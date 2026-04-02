@@ -38,6 +38,9 @@ class LimitOrderBook{
                 double tradePrice= bestAsk.front().price;
                 uint64_t tradedVol= std::min(bestBid.front().volume, bestAsk.front().volume);
 
+                std::cout << "TRADE: " << tradedVol << " @ " << tradePrice << " (ID: " << bestAsk.front().id << ")" << std::endl;
+                std::cout.flush();
+
                 bestBid.front().volume-= tradedVol;
                 bestAsk.front().volume-= tradedVol;
 
@@ -59,3 +62,13 @@ class LimitOrderBook{
             }
         }
 };
+
+int main(){
+    LimitOrderBook lob;
+    lob.addOrder(true, 100.0, 50);
+    lob.addOrder(false, 99.5, 30);
+    lob.printBook();
+    lob.addOrder(true,99.8, 40);
+    lob.printBook();
+    return 0;
+}

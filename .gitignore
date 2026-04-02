@@ -1,0 +1,27 @@
+# Windows executables
+*.exe
+lob.exe
+main.exe
+
+# Object files
+*.o
+*.obj
+
+# Debug files
+*.pdb
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Build artifacts
+build/
+Debug/
+Release/
+
+# Logs
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db
