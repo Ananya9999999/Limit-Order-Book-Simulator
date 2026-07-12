@@ -2,6 +2,7 @@
 #include<map>
 #include<deque>
 #include<chrono>
+#include<algorithm>
 
 struct Order{
     uint64_t id, volume;
@@ -31,8 +32,8 @@ class LimitOrderBook{
         }
 
         void matchOrder(){
-            while (!bids.empty() && !asks.empty() && bids.rbegin()-> first >= asks.begin()->first){
-                auto& bestBid= bids.rbegin()->second;
+            while (!bids.empty() && !asks.empty() && bids.begin()->first >= asks.begin()->first){
+                auto& bestBid= bids.begin()->second;
                 auto& bestAsk= asks.begin()->second;
 
                 double tradePrice= bestAsk.front().price;
@@ -47,8 +48,8 @@ class LimitOrderBook{
                 if (bestBid.front().volume==0) bestBid.pop_front();
                 if (bestAsk.front().volume==0) bestAsk.pop_front();
 
-                if (bids.rbegin()->second.empty()) bids.erase(bids.rbegin()->first);
-                if (asks.begin()->second.empty()) asks.erase(asks.begin()->first);
+                if (bids.begin()->second.empty()) bids.erase(bids.begin());
+                if (asks.begin()->second.empty()) asks.erase(asks.begin());
             }
         }
 
@@ -68,7 +69,20 @@ int main(){
     lob.addOrder(true, 100.0, 50);
     lob.addOrder(false, 99.5, 30);
     lob.printBook();
+
     lob.addOrder(true,99.8, 40);
     lob.printBook();
+
+    std::cout << "\n--- Multi-level regression check ---\n";
+    LimitOrderBook lob2;
+    lob2.addOrder(true, 99.0, 10);
+    lob2.addOrder(true, 101.0, 10);  
+    lob2.addOrder(true, 100.0, 10);
+    lob2.printBook();
+
+    std::cout << "\nIncoming ask should hit the 101.0 bid first:\n";
+    lob2.addOrder(false, 98.0, 5);
+    lob2.printBook();
+
     return 0;
 }
